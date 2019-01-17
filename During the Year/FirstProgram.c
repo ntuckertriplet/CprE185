@@ -12,6 +12,7 @@ int main(void){
 
   */
 
-
   return 0;
+
+  // if it is a void, not an int, you do not need to return 0; 
 }
