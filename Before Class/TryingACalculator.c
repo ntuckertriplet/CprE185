@@ -16,16 +16,19 @@ int main(){
 
   scanf("%lf", &secondNumber);
 
-  printf("Enter the operation: 1 for adding, 2 for subtracting, 3 for multiplying, 4 for dividing");
+  printf("Enter the operation");
 
-  scanf("%d", &operation);
+  scanf(" %c", &operation);
 
-  (operation == 1) ? answer = firstNumber + secondNumber :
-  (operation == 2) ? answer = firstNumber - secondNumber :
-  (operation == 3) ? answer = firstNumber * secondNumber :
-  answer = firstNumber / secondNumber;
-
-  printf("%f", answer);
+  if(operation == '+'){
+    printf("%f", firstNumber + secondNumber);
+  } else if (operation == '-'){
+    printf("%f", firstNumber - secondNumber);
+  } else if (operation == '*'){
+    printf("%f", firstNumber * secondNumber);
+  } else if (operation == '/'){
+    printf("%f", firstNumber / secondNumber);
+  }
 
   return 0;
 }
