@@ -2,7 +2,11 @@ it isn't OOP
 algorithms
 
 #include <stdio.h>
+#include <stdbool.h>
+#include <math.h>
 #include <stdlib.h>   // Enables use of rand()
+#include <string.h>
+#include <ctype.h>
 
 int main(void) {
    int seedVal;
