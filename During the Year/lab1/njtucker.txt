@@ -1,0 +1,4 @@
+Value before input: 0
+Type a number: 
+Type your netID: 
+Your input was 3 and your ISU email is njtucker@iastate.edu
