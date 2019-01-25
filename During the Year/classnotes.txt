@@ -7,6 +7,8 @@ algorithms
 #include <stdlib.h>   // Enables use of rand()
 #include <string.h>
 #include <ctype.h>
+#include <string.h>
+
 
 int main(void) {
    int seedVal;
