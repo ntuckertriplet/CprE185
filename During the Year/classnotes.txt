@@ -22,3 +22,9 @@ int main(void) {
 
    return 0;
 }
+
+
+
+total += count
+
+total = total + count
