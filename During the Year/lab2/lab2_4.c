@@ -1,46 +1,20 @@
 #include <stdio.h>
 #define M_PI 3.14159265358979323846
 int main(){
-	int a, b, c;
-	double x, y, z;
-	a = 6427;
-	b = 1725;
-	printf("%d + %d = %d/n", a, b, a + b);
 
-	a = 6971;
-	b = 3925;
-	c = 95;
-	printf("(%d * %d) - %d = %d/n", a, b, c, (a * b) – c);
+	int a = 6427 + 1725;
+	int b = (6971 * 3925) - 95;
+	double c = 79 + 12 / 5;
+	double d = 3640.0 / 107.9;
+	int e = (22 / 3) * 3;
+	int f = 22 / (3 * 3);
+	double g = 22 / (3 * 3);
+	double h = 22 /  3* 3;
+	double i = (22.0 / 3) * 3.0;
+	int j = 22.0 / (3 * 3.0);
+	double k = 22.0 / 3.0 * 3.0;
 
-	x = 79;
-	y = 12;
-	z = 5;
-	printf("%lf + %lf / %lf = %lf/n", x, y, z, x + y / z);
-
-	x = 3640.0;
-	y = 107.9;
-	printf("%lf /" %lf = %lf/n", x, y, x / y);
-
-	a = 22;
-	b = 3;
-	printf("(%d /" %d) * %d = %d/n", x, y, y, (x / y) * y);
-
-	printf("%d /" (%d * %d) = %d/n", x, y, y, x / (y * y));
-
-	x = 22;
-	y = 3;
-	printf("%lf /" (%lf * %lf) = %lf/n", x, y, y, x / (y * y));
-
-	printf("%lf /" %lf * %lf = %lf/n", x, y, y, x / y * y);
-
-	x = 22.0;
-	y = 3;
-	z = 3.0;
-	printf("(%lf /" %lf) * %lf/n", x, y, z, (x / y) * z);
-
-	printf("%d/n", 22.0 / (3 * 3.0));
-	printf("%lf/n", 22.0 / 3.0 * 3.0);
-
+	printf("a = %d\nb = %d\nc = %lf\nd = %lf\ne = %d\nf = %d\ng = %lf\nh = %lf\ni = %lf\nj = %d\nk = %lf\n", a, b, c, d, e, f, g, h, i, j, k);
 
 	/*
 	The area of a circle is given by the formula A = π*r^2,
@@ -52,18 +26,18 @@ int main(){
 	When we simplify this, we get A = C^2/(4 π).
 	*/
 	double circumference = 23.567;
-	printf("%lf",(circumference * circumference)/(4*M_PI));
+	printf("Area of a circle with %lf circumference is %lf\n", circumference, (circumference * circumference)/(4*M_PI));
 
 	/*
 	Feet to meters is 1 foot for every .3048 meters
 	*/
 	double givenFeet = 14;
-	printf("%lf", givenFeet * .3048);
+	printf("14 feet in meters is %lf\n", givenFeet * .3048);
 
 	/*
 	Given Fahrenheit, convert to Celsius
 	*/
 	double givenF = 76;
-	printf("%lf", (givenF - 32) / 1.8):
+	printf("76 degrees in Fahrenheit is %lf in Celsius\n", (givenF - 32) / 1.8);
 	return 0;
 }
