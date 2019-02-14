@@ -28,3 +28,6 @@ int main(void) {
 total += count
 
 total = total + count
+
+
+strings are goofy
