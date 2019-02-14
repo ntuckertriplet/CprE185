@@ -4,7 +4,7 @@
 //Nathan Tucker, Ian Hatlewick, Colton Urbaitis
 int factorial(int f)
 {
-	if ( f == 0 ){
+	if (f == 0){
         	return 1;
 	} else {
     		return(f * factorial(f - 1));
