@@ -1,10 +1,10 @@
 /*-----------------------------------------------------------------------------
--					          SE 185 Lab 02
+-					          SE 185 Lab 03
 -             Developed for 185-Rursch by T.Tran and K.Wang
--	Name:Nate Tucker
-- 	Section:2
--	NetID:njtucker
--	Date:13 February 2019
+-	Name:
+- 	Section:
+-	NetID:
+-	Date:
 -----------------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -17,6 +17,7 @@
 /*-----------------------------------------------------------------------------
 -	                            Defines
 -----------------------------------------------------------------------------*/
+#define TRUE 1
 
 
 /*-----------------------------------------------------------------------------
@@ -25,23 +26,17 @@
 
 
 /*-----------------------------------------------------------------------------
--							 Implementation
+-							  Implementation
 -----------------------------------------------------------------------------*/
-int main()
-{
+int main(void) {
 
-    /* Put your code after this line */
-    int x, y, z;
-    printf("Enter a width: ");
-    scanf("%d", &x);
-    printf("Enter a height: ");
-    scanf("%d", &y);
-    printf("Enter a length: ");
-    scanf("%d", &z);
-    printf("A %d by %d by %d rectangle has an volume of %d\n", x, y, z, x * y * z);
-
-
-
-    return 0;
-
+int t, c, x, s;
+    while (TRUE) {
+		scanf("%d,%d,%d,%d", &t, &c, &x, &s);
+		printf("%d\n", t+c+x+s);
+		fflush(stdout);
+    }
+  return 0;
 }
+
+/* Put your functions here */
