@@ -33,6 +33,7 @@ int main(){
       }
     }
 
+
     //now checks to see that password is unique enough
     for (int i = 0; password[i]; i++) {
       if(islower(password[i])){
@@ -53,6 +54,7 @@ int main(){
       validPassword = 1;
     }
   }
+
 
   //prompts the user to enter password again
   printf("Enter the password again: \n");
