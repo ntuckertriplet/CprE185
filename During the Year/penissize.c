@@ -21,7 +21,7 @@ while (x != 0){
 
     else{
 
-        printf("Even");
+        printf("Penis  ");
 
         x = x * x;
 
