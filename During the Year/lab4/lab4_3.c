@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 //needed standard library
-#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 //Didn't have the comment typed correctly
@@ -86,7 +86,8 @@ void RunGame (int computerNum)
     while (correct == 0)    /* This line does not contain an error */
     {
 
-        if (number = computerNum)
+        //needs to be == comparator
+        if (number == computerNum)
         {
             printf("\nYou guessed the number correctly!\n");
 
@@ -94,7 +95,9 @@ void RunGame (int computerNum)
             printf("The number was %d\n\n", computerNum);
             correct = 1;
         }
-        else if (number < computerNum);
+
+        //there was an added semicolon on this line
+        else if (number < computerNum)
         {
             printf("\nYou guessed too low.  Enter another guess.\n  ->");
             scanf("%d", &number);
