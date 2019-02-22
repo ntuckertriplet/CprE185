@@ -4,11 +4,16 @@
 -----------------------------------------------------------------------------*/
 #include <stdio.h>
 
+//needed standard library
+#include <stdio.h>
 #include <time.h>
 
 //Didn't have the comment typed correctly
 /* Prototypes */
 char AskToPlay(int timesPlayed);
+
+//need the SelectRandNum() prototype
+int SelectRandNum();
 
 void RunGame (int computerNum);
 
@@ -22,11 +27,14 @@ int main()
 
     while(prompt == 'y')     /* This line does not contain an error */
     {
-        computerGuess == SelectRandNum();
+
+        //used == instead of = to assign
+        computerGuess = SelectRandNum();
         RunGame(computerGuess);
         prompt = AskToPlay(played);
     }
-    printf("\n\nThank you for playing.\n")
+    //no semicolon
+    printf("\n\nThank you for playing.\n");
     return 0;
 }
 
@@ -37,7 +45,9 @@ char AskToPlay(int playedBefore)
     if (playedBefore == 0)
     {
         printf("Do you want to play a game?\n  ->");
-        scanf(" %c", yesNo);
+
+        //needs a pointer for scanf
+        scanf(" %c", &yesNo);
     }
     else
     {
@@ -49,7 +59,8 @@ char AskToPlay(int playedBefore)
 
 int SelectRandNum()
 {
-    int c*mpGuess = 0;
+    //misspelled
+    int compGuess = 0;
     srand((int)time(0));
     compGuess = ((rand() % 100) + 1);
     return compGuess;
@@ -78,7 +89,9 @@ void RunGame (int computerNum)
         if (number = computerNum)
         {
             printf("\nYou guessed the number correctly!\n");
-            printf("The number was %c\n\n", computerNum);
+
+            //was printing the ASCII place of the number, the argument needed to be %d
+            printf("The number was %d\n\n", computerNum);
             correct = 1;
         }
         else if (number < computerNum);
