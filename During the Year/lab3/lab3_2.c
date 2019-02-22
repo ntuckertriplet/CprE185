@@ -1,10 +1,10 @@
 /*-----------------------------------------------------------------------------
 -					          SE 185 Lab 03
 -             Developed for 185-Rursch by T.Tran and K.Wang
--	Name:
-- 	Section:
--	NetID:
--	Date:
+-	Name:Nathan Tucker
+- 	Section:2
+-	NetID:njtucker
+-	Date:20 February 2019
 -----------------------------------------------------------------------------*/
 
 /*-----------------------------------------------------------------------------
@@ -30,10 +30,10 @@
 -----------------------------------------------------------------------------*/
 int main(void) {
 
-int t, c, x, s;
+int triangle, circle, x, square;
     while (TRUE) {
-		scanf("%d,%d,%d,%d", &t, &c, &x, &s);
-		printf("%d\n", t+c+x+s);
+		scanf("%d,%d,%d,%d", &triangle, &circle, &x, &square);
+		printf("%d\n", triangle+cirlce+x+square);
 		fflush(stdout);
     }
   return 0;
