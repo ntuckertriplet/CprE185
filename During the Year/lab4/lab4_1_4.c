@@ -42,7 +42,7 @@ int main()
     {
         length_in_meters = waveLength / pow(10,9); //Converting nano-meters to meters
         energy = (planck_const*speed_light) / (length_in_meters); //Calculating the energy of 1 photon
-        printf("A photon with a wavelength of %08.3lf nano-meters, carries\n%030.25lf joules of energy.", waveLength, energy);
+        printf("A photon with a wavelength of %08.3lf nano-meters, carries\n%030.25lf joules of energy\n.", waveLength, energy);
     }
     else
     {

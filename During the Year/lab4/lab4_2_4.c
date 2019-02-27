@@ -16,7 +16,9 @@ double current(double voltage, double resistance);
 int main()
 {
     int select = 0;
-    int v, i, r;
+
+    //these were declared as ints, needed to be doubles
+    double v, i, r;
 
     printf("Select:\n1 for voltage\n2 for resistance\n3 for current\n");
 
@@ -33,13 +35,11 @@ int main()
     {
         printf("Please enter a resistance value: ");
 
-    	//was looking for a double when r was declared as int
-        scanf("%d", &r);
+        scanf("%lf", &r);
 
         printf("Please enter a current value: ");
 
-	//same as above
-        scanf("%d", &i);
+        scanf("%lf", &i);
 
         printf("Your voltage is: %lf Volts\n", voltage(r, i));
     }
@@ -47,13 +47,11 @@ int main()
     {
         printf("Please enter a voltage value: ");
 
-	//same as above, wrong type
-        scanf("%d", &v);
+        scanf("%lf", &v);
 
         printf("Please enter a current value: ");
 
-	//same as above
-        scanf("%d", &i);
+        scanf("%lf", &i);
 
         printf("Your Resistance is: %lf Ohms\n", resistance(v, i));
 
@@ -62,13 +60,11 @@ int main()
     {
         printf("Please enter a resistance value: ");
 
-	//WOW ITS THE SAME
-        scanf("%d", &r);
+        scanf("%lf", &r);
 
         printf("Please enter a voltage value: ");
 
-	//YOU GUESSED IT
-        scanf("%d", &v);
+        scanf("%lf", &v);
 
         printf("Your current is: %lf Amps\n", current(v, r));
 

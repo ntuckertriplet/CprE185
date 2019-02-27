@@ -32,7 +32,7 @@ int main()
         return -1;
     }
 
-    //the or operator is ||, not a single |, and the && operator, not &
+    //the or operator is ||, not a single |, and the operator needs to make sure it is not 0
     if( ( isPositive(num) && !isNegative(num) )  || isZero(num) )
     {
         printf("%lf is a whole number.\n", num);
