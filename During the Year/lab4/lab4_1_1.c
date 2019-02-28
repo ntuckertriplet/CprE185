@@ -4,7 +4,7 @@
 -----------------------------------------------------------------------------*/
 #include <stdio.h>
 
-/* This program outputs if a integer will divide into another integer with no remainder*/
+/* This program outputs if an integer will divide into another integer with no remainder*/
 
 int main() {
     int i, j;
@@ -21,7 +21,7 @@ int main() {
     if (j % i == 0) {
         printf("%d divides %d\n", i, j);
 
-    //There needed to be parens before and after the else expression
+    //There needed to be brackets before and after the else expression
     }else{
 
         //printf was misspelled as pritf
