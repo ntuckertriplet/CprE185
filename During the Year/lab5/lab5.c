@@ -13,20 +13,17 @@
 #include <stdio.h>
 #include <math.h>
 
-
 /*-----------------------------------------------------------------------------
 -	                            Defines
 -----------------------------------------------------------------------------*/
 #define TRUE 1
 #define FALSE 0
-
 /*-----------------------------------------------------------------------------
 -	                            Prototypes
 -----------------------------------------------------------------------------*/
 int close_to(double, double, double);
 double mag(double, double, double);
-int orientation(double, double, double);
-int print(int, int);
+int orientation(double);
 
 /*-----------------------------------------------------------------------------
 -							  Implementation
@@ -34,7 +31,7 @@ int print(int, int);
 int main(void) {
     int t, b1, b2, b3, b4;
     double ax, ay, az, gx, gy, gz;
-	int lastRead = 0;
+	  int flag = 0;
 
 
     while (b1 != 1) {
@@ -47,8 +44,58 @@ int main(void) {
          (lab 3).  You will also need to copy your prototypes and functions to the appropriate sections
          in this program. */
 
-		 if(close_to(.04, .1, mag(ax, ay, az))){
-			print(orientation(gx, gy, gz), lastRead);
+		 if(close_to(.1, 0.0, gx)){
+			if(close_to(.1, 1.0, gy)) {
+        if(close_to(.1, 0.0, gz)) && flag != 1 {
+          orientation(1);
+          flag = 1;
+        }
+      }
+		 }
+
+     if(close_to(.1, 0.0, gx)){
+			if(close_to(.1, -1.0, gy)) {
+        if(close_to(.1, 0.0, gz)) && flag != 2 {
+          orientation(2);
+          flag = 2;
+        }
+      }
+		 }
+
+     if(close_to(.1, 0.0, gx)){
+			if(close_to(.1, 0.0, gy)) {
+        if(close_to(.1, -1.0, gz)) && flag != 3 {
+          orientation(3);
+          flag = 3;
+        }
+      }
+		 }
+
+     if(close_to(.1, 0.0, gx)){
+			if(close_to(.1, 0.0, gy)) {
+        if(close_to(.1, 1.0, gz)) && flag != 4 {
+          orientation(4);
+          flag = 4;
+        }
+      }
+		 }
+
+     if(close_to(.1, 1.0, gx)){
+			if(close_to(.1, 0.0, gy)) {
+        if(close_to(.1, 0.0, gz)) && flag != 5 {
+          orientation(5);
+          flag = 5;
+        }
+      }
+		 }
+
+     if(close_to(.1, -1.0, gx)){
+			if(close_to(.1, 0.0, gy)) {
+        if(close_to(.1, 0.0, gz)) && flag != 6 {
+          orientation(2);
+          flag = 6;
+        }
+      }
 		 }
 
         //printf("At %d ms, the acceleration's magnitude was: %f\n", t, mag(ax, ay, az));
@@ -64,57 +111,20 @@ double mag(double ax, double ay, double az){
 }
 
 int close_to(double tolerance, double point, double value){
-	if(value < (tolerance + point) && value > (point - tolerance))
-		return 1;
-
-	return 0;
+  int close;
+  (value <= (tolerance + point) && value >= (point - tolerance)) ? close = 1 : close = 0;
+  return close;
+	// if(value <= (tolerance + point) && value >= (point - tolerance)){
+	// 	return 1;
+  // } else {
+	//   return 0;
+  // }
 }
 
-int orientation(double gx, double gy, double gz){
-	if(close_to(.2, 1.0, gy)){
-		return 1;
-	} else if (close_to(.2, -1.0, gy)) {
-		return 2;
-	} else if (close_to(.2, 1.0, gx)) {
-		return 3;
-	} else if (close_to(.2, -1.0, gx)) {
-		return 4;
-	} else if (close_to(.2, -1.0, gz)) {
-		return 5;
-	} else if (close_to(.2, 1.0, gz)) {
-		return 6;
-	} else {
-		return 0;
-	}
-}
-
-int print(int orient, int lastOrient){
-	if(orient != lastOrient){
-		switch(orient){
-			case 1:
-			printf("Top\n");
-			break;
-
-			case 2:
-			printf("Bottom\n");
-			break;
-
-			case 3:
-			printf("Left\n");
-			break;
-
-			case 4:
-			printf("Right\n");
-			break;
-
-			case 5:
-			printf("Front\n");
-			break;
-
-			case 6:
-			printf("Back\n");
-			break;
-		}
-	}
-	lastOrient = orient;
+void orientation(int direction){
+  (direction == 1) ? printf("TOP") :
+  (direction == 2) ? printf("BOTTOM") :
+  (direction == 3) ? printf("RIGHT") :
+  (direction == 4) ? printf("LEFT") :
+  (direction == 5) ? printf("FRONT") : printf("BACK") ;
 }
