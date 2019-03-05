@@ -20,9 +20,6 @@
 #define TRUE 1
 #define FALSE 0
 
-enum direction {TOP = 1, BOTTOM, RIGHT, LEFT, FRONT, BACK };
-
-
 /*-----------------------------------------------------------------------------
 -	                            Prototypes
 -----------------------------------------------------------------------------*/
@@ -49,7 +46,7 @@ int main(void) {
         /* It would be wise (mainly save time) if you copy your code to calculate the magnitude from last week
          (lab 3).  You will also need to copy your prototypes and functions to the appropriate sections
          in this program. */
-		 
+
 		 if(close_to(.04, .1, mag(ax, ay, az))){
 			print(orientation(gx, gy, gz), lastRead);
 		 }
@@ -67,9 +64,9 @@ double mag(double ax, double ay, double az){
 }
 
 int close_to(double tolerance, double point, double value){
-	if(value < (tolerance + point) && value > (point - tolerance)) 
+	if(value < (tolerance + point) && value > (point - tolerance))
 		return 1;
-	
+
 	return 0;
 }
 
@@ -97,23 +94,23 @@ int print(int orient, int lastOrient){
 			case 1:
 			printf("Top\n");
 			break;
-			
+
 			case 2:
 			printf("Bottom\n");
 			break;
-			
+
 			case 3:
 			printf("Left\n");
 			break;
-			
+
 			case 4:
 			printf("Right\n");
 			break;
-			
+
 			case 5:
 			printf("Front\n");
 			break;
-			
+
 			case 6:
 			printf("Back\n");
 			break;
@@ -121,22 +118,3 @@ int print(int orient, int lastOrient){
 	}
 	lastOrient = orient;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
