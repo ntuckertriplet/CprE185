@@ -1,10 +1,10 @@
 /*-----------------------------------------------------------------------------
 -					          SE 185 Lab 07
 -             Developed for 185-Rursch by T.Tran and K.Wang
--	Name:
-- 	Section:
--	NetID:
--	Date:
+-	Name: Nathan Tucker
+- 	Section: B
+-	NetID: njtucker
+-	Date: 13 March 2019
 -
 -   This file provides the outline for your program
 -   Please implement the functions given by the prototypes below and
