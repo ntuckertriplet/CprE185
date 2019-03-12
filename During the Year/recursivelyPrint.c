@@ -10,7 +10,7 @@ void printNos(unsigned int n){
 
 // Driver code
 int main(){
-    printNos(99999);
+    printNos(1000);
     getchar();
     return 0;
 }
