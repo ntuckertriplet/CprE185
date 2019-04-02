@@ -94,25 +94,27 @@ int main()
 	int b_Triangle, b_X, b_Square, b_Circle;    // variables to hold the button statuses
 	double roll_rad, pitch_rad;                 // value of the roll measured in radians
 	int l_joy_x, l_joy_y, r_joy_x, r_joy_y;  // value of the roll adjusted to fit screen display
-	//insert any beginning needed code here
-	//int lastState = 0;
-	int togglePressed = 0;
+	
+	int lastPressed = 0, set = 0;
 	do{
 		
 		
-		read_input(&time, &g_x, &g_y, &g_z, &b_Triangle, &b_Circle, &b_X, &b_Square, &l_joy_x, &l_joy_y, &r_joy_y, &r_joy_y);
-		if (b_Circle) {
-			if (!togglePressed) {
-				togglePressed = 1;
-			}else {
-				togglePressed = 0;
-			}
+		read_input(&time, &g_x, &g_y, &g_z, &b_Triangle, &b_Circle, &b_X, &b_Square, &l_joy_x, &l_joy_y, &r_joy_x, &r_joy_y);
+		if (set == 0 && b_Circle == 1) {
+			lastPressed = (lastPressed + 1) % 3;
+			set = 1;
+		}
+	
+		if (b_Circle == 0) {
+			set = 0;
 		}
 		
-		if (togglePressed) {
+		if (lastPressed == 0) {
 			graph_line(scaleMagForScreen(roll(g_x)));
-		}if (!togglePressed){
+		}if (lastPressed == 1){
 			graph_line(scaleMagForScreen(pitch(g_y)));
+		}if (lastPressed == 2) {
+			graph_line(scaleJoyForScreen(r_joy_x));
 		}
 
 		fflush(stdout);	
@@ -147,7 +149,7 @@ int scaleMagForScreen(double rad) {
 
 /* This function scales the joystick value to fit on the screen. */
 int scaleJoyForScreen(int joystick_VAL) {
-	return (int)((((joystick_VAL + 128.0) / 255.0) * 78) - 39);
+	return joystick_VAL / 5;
 
 }
 
