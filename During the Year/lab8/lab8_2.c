@@ -1,9 +1,9 @@
 /*-----------------------------------------------------------------------------
 -					  		SE 185 Lab 08
 -             Developed for 185-Rursch by T.Tran and K.Wang
--	Name:
-- Section:
--	NetID:
+-	Name: Nathan Tucker
+- Section: B
+-	NetID: njtucker
 -	Date:
 -----------------------------------------------------------------------------*/
 
@@ -11,9 +11,11 @@
 -								Includes
 -----------------------------------------------------------------------------*/
 #include <stdio.h>
+#include <stdlib.h>
 #include <math.h>
 #include <ncurses/ncurses.h>
 #include <unistd.h>
+#include <time.h>
 
 
 /*-----------------------------------------------------------------------------
@@ -72,92 +74,91 @@ double calc_roll(double mag);
 double m_avg(double buffer[], int avg_size, double new_item);
 
 
+
 /*-----------------------------------------------------------------------------
 -								Implementation
 -----------------------------------------------------------------------------*/
 /*	Main - Run with './ds4rd.exe -t -g -b' piped into STDIN */
-void main(int argc, char* argv[])
+int main(int argc, char* argv[])
 {
-	
-	double x[200], y[200], z[200];
-    double new_x, new_y, new_z;
-    double avg_x, avg_y, avg_z;
-	int button_t, button_c, button_x, button_s;
-	int t = 0, update_time;
-	int i = 0, j = 0;
+	int loss = 0;
+	int row = 0, col = COLUMNS / 2, buffer, sideBuffer, timeIn;
+	double gX, gY, gZ;
 
+	if (argc <2) { printf("You forgot the difficulty\n"); return 1;}
+	int difficulty = atoi(argv[1]); // get difficulty from first command line arg
+	// setup screen
+	initscr();
+	refresh();
 
-	if (argc != 2 )
+	srand(time(NULL));
+	// Generate and draw the maze, with initial avatar
+	generate_maze(difficulty);
+	draw_maze();
+	refresh();
+	// Read gyroscope data to get ready for using moving averages.
+	scanf("%d, %lf, %lf, %lf", &timeIn, &gX, &gY, &gZ);
+	buffer = sideBuffer = timeIn;
+	// Event loop
+
+	do
 	{
-		printw("You must enter the difficulty level on the command line.");
-		refresh();
-		return;
+		// Read data, update average
+		scanf("%d, %lf, %lf, %lf", &timeIn, &gX, &gY, &gZ);
+		// Is it time to move?  if so, then move avatar
+		if (timeIn - sideBuffer > 50) {																								//time to move
+			if (calc_roll(gX) > .2 && col < COLUMNS && MAZE[row][col + 1] != WALL){  				//Right move
+				col++;
+				draw_character(col, row, AVATAR);																					//Draw charactar
+				draw_character(col - 1, row, ' ');																				//erase previouse
+
+				sideBuffer = timeIn;
+			}
+			else if (calc_roll(gX) < -.2 && col > 0 && MAZE[row][col - 1] != WALL){					//Left move
+				col--;
+				draw_character(col, row, AVATAR);																					//Draw charactar
+				draw_character(col + 1, row, ' ');																				//erase previouse
+
+				sideBuffer = timeIn;
+			}
+		}
+		if (timeIn - buffer > 500 && MAZE[row + 1][col] != WALL) {										//Time to move down / can i move down
+			row++;
+			draw_character(col, row, AVATAR);																						//Draw charactar
+			draw_character(col, row - 1, ' ');																					//erase previouse
+			buffer = timeIn;
+		}
+
+		// Check if loss
+		if (MAZE[row + 1][col] == WALL && MAZE[row][col - 1] == WALL && MAZE[row][col + 1] == WALL) {
+			sleep(1);
+			loss = 1;
+			break;
+
+		}
+	} while(row < ROWS); // Change this to end game at right time
+
+	// Print the win message
+	endwin();
+	system("CLEAR");
+	if (loss) {
+		for (int i = 0; i < row / 2; i++){
+			printf("YOU LOST!!!! \t\t(╯°□°）╯︵ ┻━┻\n");
+		}
+		printf("You lasted %d rows and %lf seconds, %02.1lf%%",row, (double)timeIn / 1000.0, 100 * ((double)row / (double)ROWS));
 	}
-	else
-	{
-	/* 	Setup screen for Ncurses
-		The initscr functionis used to setup the Ncurses environment
-		The refreash function needs to be called to refresh the outputs
-		to the screen */
-		initscr();
-		refresh();
-
-		/* WEEK 2 Generate the Maze */
-		generate_maze(1);
-		draw_maze();
-		draw_character(0, 0, AVATAR);
-
-		/* Read gyroscope data and fill the buffer before continuing */
-		while(t < 1000) {
-			//scanf("%d, %lf, %lf, %lf, %d, %d, %d, %d", &t, &new_x, &new_y, &new_z, &button_t, &button_c, &button_x, &button_s);
-		}
-		/* Event loop */
-		do
-		{
-			
-			/* Read data, update average */
-			//scanf("%d, %lf, %lf, %lf, %d, %d, %d, %d", &t, &new_x, &new_y, &new_z, &button_t, &button_c, &button_x, &button_s);
-			avg_x = m_avg(x, NUM_SAMPLES, new_x);
-			avg_y = m_avg(y, NUM_SAMPLES, new_y);
-			avg_z = m_avg(z, NUM_SAMPLES, new_z);
-
-			/* Is it time to move?  if so, then move avatar */
-			if (avg_x > 0) {
-				draw_character(i + 1, j + 1, AVATAR);
-				MAZE[i][j] = EMPTY_SPACE;
-				refresh();
-			}
-			
-			int wait = 0;
-			int waitlonger = 0;
-			while(wait < 100000) {
-				while (waitlonger < 100000) {
-					
-				}
-			}
-			
-			
-		} while(1); // Change this to end game at right time
-
-			/* Print the win message */
-
-
-			/* This function is used to cleanup the Ncurses environment.
-			Without it, the characters printed to the screen will persist
-			even after the progam terminates */
-			endwin();
-
-		}
-
-			printf("YOU WIN!\n");
+	else printf("YOU WIN!\n");																												//announce win
+	fflush(stdout);
+	return 0;
 }
+
 
 double m_avg(double buffer[], int avg_size, double new_item)
 {
 	double output = 0;
 	
 	for(int i = 0; i < avg_size; i++) {
-		output = output + buffer[i];
+		output += buffer[i];
 	}
 	
 	output /= avg_size;
@@ -175,28 +176,35 @@ double m_avg(double buffer[], int avg_size, double new_item)
     POST: Draws character use to the screen and position x,y
     THIS CODE FUNCTIONS FOR PLACING THE AVATAR AS PROVIDED.
     DO NOT NEED TO CHANGE THIS FUNCTION. */
-void draw_character(int x, int y, char use)
-{
+void draw_character(int x, int y, char use){
     mvaddch(y,x,use);
     refresh();
 }
 
 
-void draw_maze(){
-
-	for(int i = 0; i < COLUMNS; i++) {
-		for(int j = 0; j < ROWS; j++) {
-			MAZE[i][j] = ' ';
+void generate_maze(int difficulty){
+	for(int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLUMNS; j++) {
+			MAZE[i][j] = rand() % 100 < difficulty ? WALL : EMPTY_SPACE;
 		}
 	}
-	refresh();
 }
 
-void generate_maze(int difficulty){
-	for(int i = 0; i < COLUMNS; i ++) {
-		for(int j = 0; j < ROWS; j ++) {
-			MAZE[i][j] = ' ';
+void draw_maze(void){
+	for(int i = 0; i < ROWS; i++) {
+		for (int j = 0; j < COLUMNS; j++) {
+			mvaddch(i, j, MAZE[i][j]);
 		}
 	}
-	refresh();
+}
+
+double calc_roll(double x_mag){
+	if (x_mag > 1) {
+		x_mag = 1;
+	}
+	else if(x_mag < -1) {
+		x_mag = -1;
+	}
+
+	return (-1) * asin(x_mag);
 }
