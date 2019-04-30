@@ -10,12 +10,12 @@ char buffer[1024];
 const int MAX_DIGITS = 50;
 int i,j = 0;
 
-struct public_key_class{
+struct public_key_struct{
   long long modulus;
   long long exponent;
 };
 
-struct private_key_class{
+struct private_key_struct{
   long long modulus;
   long long exponent;
 };
@@ -32,15 +32,15 @@ long long gcd(long long a, long long b)
 }
 
 
-long long ExtEuclid(long long a, long long b)
+long long calculate_d(long long a, long long b)
 {
- long long x = 0, y = 1, u = 1, v = 0, gcd = b, m, n, q, r;
+ long long x = 0, d = 1, u = 1, v = 0, gcd = b, m, n, q, r;
  while (a!=0) {
    q = gcd/a; r = gcd % a;
-   m = x-u*q; n = y-v*q;
-   gcd = a; a = r; x = u; y = v; u = m; v = n;
+   m = x-u*q; n = d-v*q;
+   gcd = a; a = r; x = u; d = v; u = m; v = n;
    }
-   return y;
+   return d;
 }
 
 long long rsa_modExp(long long b, long long e, long long m)
@@ -62,7 +62,7 @@ long long rsa_modExp(long long b, long long e, long long m)
 
 // Calling this function will generate a public and private key and store them in the pointers
 // it is given. 
-void rsa_gen_keys(struct public_key_class *pub, struct private_key_class *priv, char *PRIME_SOURCE_FILE)
+void rsa_gen_keys(struct public_key_struct *pub, struct private_key_struct *priv, char *PRIME_SOURCE_FILE)
 {
   FILE *primes_list;
   if(!(primes_list = fopen(PRIME_SOURCE_FILE, "r"))){
@@ -93,7 +93,7 @@ void rsa_gen_keys(struct public_key_class *pub, struct private_key_class *priv, 
   long long d = 0;
   char prime_buffer[MAX_DIGITS];
   long long max = 0;
-  long long phi_max = 0;
+  long long totient_n = 0;
   
   srand(time(NULL));
   
@@ -123,20 +123,20 @@ void rsa_gen_keys(struct public_key_class *pub, struct private_key_class *priv, 
     q = atol(prime_buffer); 
 
     max = p*q;
-    phi_max = (p-1)*(q-1);
+    totient_n = (p-1)*(q-1);
   }
-  while(!(p && q) || (p == q) || (gcd(phi_max, e) != 1));
+  while(!(p && q) || (p == q) || (gcd(totient_n, e) != 1));
  
   // Next, we need to choose a,b, so that a*max+b*e = gcd(max,e). We actually only need b
   // here, and in keeping with the usual notation of RSA we'll call it d. We'd also like 
   // to make sure we get a representation of d as positive, hence the while loop.
-  d = ExtEuclid(phi_max,e);
+  d = calculate_d(totient_n,e);
   while(d < 0){
-    d = d+phi_max;
+    d += totient_n;
   }
 
   printf("primes are %lld and %lld\n",(long long)p, (long long )q);
-  // We now store the public / private keys in the appropriate structs
+  // Store public and private key values n, d, and e
   pub->modulus = max;
   pub->exponent = e;
 
@@ -145,13 +145,10 @@ void rsa_gen_keys(struct public_key_class *pub, struct private_key_class *priv, 
 }
 
 
-long long *rsa_encrypt(const char *message, const unsigned long message_size, 
-                     const struct public_key_class *pub)
-{
+long long *rsa_encrypt(const char *message, const unsigned long message_size, const struct public_key_struct *pub){
   long long *encrypted = malloc(sizeof(long long)*message_size);
   if(encrypted == NULL){
-    fprintf(stderr,
-     "Error: Heap allocation failed.\n");
+    fprintf(stderr, "Error in encryption.\n");
     return NULL;
   }
   long long i = 0;
@@ -162,13 +159,9 @@ long long *rsa_encrypt(const char *message, const unsigned long message_size,
 }
 
 
-char *rsa_decrypt(const long long *message, 
-                  const unsigned long message_size, 
-                  const struct private_key_class *priv)
-{
+char *rsa_decrypt(const long long *message, const unsigned long message_size, const struct private_key_struct *priv){
   if(message_size % sizeof(long long) != 0){
-    fprintf(stderr,
-     "Error: message_size is not divisible by %d, so cannot be output of rsa_encrypt\n", (int)sizeof(long long));
+    fprintf(stderr,"Error: message_size is not divisible by %d, so cannot be output of rsa_encrypt\n", (int)sizeof(long long));
      return NULL;
   }
   // We allocate space to do the decryption (temp) and space for the output as a char array
@@ -176,8 +169,7 @@ char *rsa_decrypt(const long long *message,
   char *decrypted = malloc(message_size/sizeof(long long));
   char *temp = malloc(message_size);
   if((decrypted == NULL) || (temp == NULL)){
-    fprintf(stderr,
-     "Error: Heap allocation failed.\n");
+    fprintf(stderr, "Error in decryption.\n");
     return NULL;
   }
   // Now we go through each 8-byte chunk and decrypt it.
