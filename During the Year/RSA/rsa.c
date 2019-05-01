@@ -1,34 +1,49 @@
 #include <stdio.h>
-#include <stdint.h>
 #include <stdlib.h>
 #include <math.h>
 #include <time.h>
 #include <string.h>
+#include <stdint.h>
 
 
-char buffer[1024];
-const int MAX_DIGITS = 50;
+
+//stored as int now, as they will be modified to a long long type
+//for encryption and decryption
 int i,j = 0;
 
+//public key component containing the exp and mod
+//The exponent will be the same as the private key
 struct public_key_struct{
-  long long modulus;
   long long exponent;
+  long long modulus;
 };
 
+//private key component
 struct private_key_struct{
-  long long modulus;
   long long exponent;
+  long long modulus;
 };
 
 
-// Greatest common divisor
-long long gcd(long long x, long long y)
-{
-  long long temp;
-  while ( x != 0 ) {
-    temp = x; x = y%x;  y = temp;
-  }
-  return y;
+// Recursive function to return gcd of a and b 
+int gcd(int a, int b) 
+{ 
+    // Everything divides 0  
+    if (a == 0){ 
+       return b;
+    } 
+    if (b == 0){ 
+       return a;
+    } 
+    // base case 
+    if (a == b){ 
+        return a;
+    }	
+    // a is greater 
+    if (a > b){ 
+        return gcd(a-b, b);
+    }	
+    return gcd(a, b-a); 
 }
 
 
@@ -45,41 +60,59 @@ long long calculate_d(long long a, long long b){
 // recursively go through and go from encrypted to decrypted or vice versa
 // the math works the same when given the public key to encrypt and the private key to decrypt
 long long calculate_mod_exp(long long mess, long long e, long long m){
+// if any are negative or the message is less than or equal to zero, it won't work, break
   if (mess < 0 || e < 0 || m <= 0){
     exit(1);
   }
   mess = mess % m;
   if(e == 0) return 1; // x to the 0 is 1
   if(e == 1) return b; // x to the 1 in x
+  //case if even
   if(e % 2 == 0){
     return (calculate_mod_exp(mess * mess % m, e/2, m) % m);
   }
+  //case if odd
   if(e % 2 == 1){
     return (mess * calculate_mod_exp(mess, (e-1), m) % m);
   }
 
 }
 
-// generate a public and private key and store them in the pointers
-void rsa_gen_keys(struct public_key_struct *pub, struct private_key_struct *priv, char *PRIME_SOURCE_FILE)
+
+
+//a buffer as 2 ^ 10 size
+char buffer[1024];
+
+//unchanged value, ergo const
+const int MAX_DIGITS = 50;
+
+
+// generate a public and private key, given the primes list and the key structs
+void rsa_gen_keys(struct public_key_struct *pub, struct private_key_struct *priv, char *primelistfile)
 {
   FILE *primes_list;
-  if(!(primes_list = fopen(PRIME_SOURCE_FILE, "r"))){
-    fprintf(stderr, "Problem reading %s\n", PRIME_SOURCE_FILE);
-    exit(1);
-  }
 
   // count number of primes in the list
-  long long prime_count = 0;
+  int num_primes = 0;
+ 
+  //do - while because it will need to be done at least once
   do{
-    int bytes_read = fread(buffer,1,sizeof(buffer)-1, primes_list);
-    buffer[bytes_read] = '\0';
+    //read in the file
+    int position = fread(buffer,1,sizeof(buffer)-1, primes_list);
+   
+    //need a null character to stop an array
+    buffer[position] = '\0';
     for (i=0 ; buffer[i]; i++){
+
+      //file is in a list format, with one number on each line.
+      //therefore, every number would require a new line space except the last one
       if (buffer[i] == '\n'){
-	prime_count++;
+	num_primes++;
       }
     }
   }
+
+  //stop at end of file
   while(feof(primes_list) == 0);
   
   
@@ -87,13 +120,15 @@ void rsa_gen_keys(struct public_key_struct *pub, struct private_key_struct *priv
 
   long long p = 0;
   long long q = 0;
-
-  long long e = powl(2, 8) + 1;
+  
+  //powl is pow using longs
+  long long e = powl(2, 8) + 1; // e = 257
   long long d = 0;
   char prime_buffer[MAX_DIGITS];
   long long max = 0;
   long long totient_n = 0;
   
+  //seed random
   srand(time(NULL));
   
   do{
@@ -101,7 +136,7 @@ void rsa_gen_keys(struct public_key_struct *pub, struct private_key_struct *priv
     int a =  (double)rand() * (prime_count+1) / (RAND_MAX+1.0);
     int b =  (double)rand() * (prime_count+1) / (RAND_MAX+1.0);
     
-    // here we find the prime at position a, store it as p
+    // rewind to the start of the file in order to go through and select values
     rewind(primes_list);
     for(i=0; i < a + 1; i++){
       fgets(prime_buffer,sizeof(prime_buffer)-1, primes_list);
