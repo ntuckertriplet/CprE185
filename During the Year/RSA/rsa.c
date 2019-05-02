@@ -24,71 +24,18 @@ struct private_key_struct{
   long long modulus;
 };
 
-
-
-// Recursive function to return gcd of a and b 
-int gcd(int a, int b) 
-{ 
-    // Everything divides 0  
-    if (a == 0){ 
-       return b;
-    } 
-    if (b == 0){ 
-       return a;
-    } 
-    // base case 
-    if (a == b){ 
-        return a;
-    }	
-    // a is greater 
-    if (a > b){ 
-        return gcd(a-b, b);
-    }	
-    return gcd(a, b-a); 
-}
+// recursively go through and go from encrypted to decrypted or vice versa
+// the math works the same when given the public key to encrypt and the private key to decrypt
+long long calculate_mod_exp(long long mess, long long exp, long long mod);
 
 // this function is using the extended euclidian algorithm to calculate d
 // essentially, to find d, it needs to satisfy de ≡ 1 mod phi
 // it's a little hard to follow, and even some of the logic goes a little over my head
 // all i know it that it works, and if it works, it doesn't need fixed
-long long calculate_d(long long a, long long b){
- long long x = 0, d = 1, u = 1, v = 0; 
- long long gcd = b, var_a, n, q, var_b;
- do{
-   q = gcd/a; 
-   var_b = gcd % a;
-   var_a = x-u*q; 
-   n = d-v*q;
-   gcd = a; 
-   a = var_b; 
-   x = u; 
-   d = v; 
-   u = var_a; 
-   v = n;
-   } while (a != 0); 
-   return d;
-}
+long long calculate_d(long long a, long long b);
 
-// recursively go through and go from encrypted to decrypted or vice versa
-// the math works the same when given the public key to encrypt and the private key to decrypt
-long long calculate_mod_exp(long long mess, long long exp, long long mod){
-// if any are negative or the message is less than or equal to zero, it won't work, break
-  if (mess < 0 || exp < 0 || mod <= 0){
-    exit(-1);
-  }
-  mess %= mod;
-  
-  //case if even
-  if(exp % 2 == 0){
-    return (calculate_mod_exp(mess * mess % mod), (exp / 2), mod) % mod);
-  }
-  //case if odd
-  if(e % 2 == 1){
-    return (mess * calculate_mod_exp(mess, (exp - 1), mod) % mod);
-  }
-
-}
-
+// Recursive function to return greatest common divisor of a and b 
+int gcd(int a, int b);
 
 
 //a buffer of a large size with more than enough spaces for the prime numbers
@@ -134,7 +81,10 @@ void rsa_gen_keys(struct public_key_struct *pub, struct private_key_struct *priv
   long long q = 0;
   
   //powl is pow using longs
+  //the exponent e
   long long e = powl(2, 8) + 1; // e = 257
+  
+  //private key d
   long long d = 0;
   char prime_buffer[largest_nums];
   long long max = 0;
@@ -150,19 +100,21 @@ void rsa_gen_keys(struct public_key_struct *pub, struct private_key_struct *priv
     
     // rewind to the start of the file in order to go through and select values
     rewind(primes_list);
-    for(i=0; i < a + 1; i++){
-      fgets(prime_buffer,sizeof(prime_buffer)-1, primes_list);
+    for(i=0; i <= a; i++){
+      fgets(prime_buffer, sizeof(prime_buffer) - 1, primes_list);
     }
+	//convert string to long, store the first prime p
     p = atol(prime_buffer); 
     
-    // here we find the prime at position b, store it as q
+    // find the prime at position b, store it as q
     rewind(primes_list);
-    for(i=0; i < b + 1; i++){
+    for(i=0; i <= b; i++){
       for(j=0; j < largest_nums; j++){
-	prime_buffer[j] = 0;
+		prime_buffer[j] = 0;
       }
-      fgets(prime_buffer,sizeof(prime_buffer)-1, primes_list);
+      fgets(prime_buffer, sizeof(prime_buffer) - 1, primes_list);
     }
+	// convert string to long, store the second prime q
     q = atol(prime_buffer); 
 
     max = p*q;
@@ -187,10 +139,11 @@ void rsa_gen_keys(struct public_key_struct *pub, struct private_key_struct *priv
   priv->exponent = d;
 }
 
-
+//encrypts the data as numbers that are garbage without the private key to decrypt
 long long *rsa_encrypt(char *message, unsigned long message_size, struct public_key_struct *pub){
   long long *encrypted = malloc(sizeof(long long)*message_size);
   
+  //for every chunk of the message, encrypt it with the key parts and the message
   long long i = 0;
   for(i=0; i < message_size; i++){
     encrypted[i] = calculate_mod_exp(message[i], pub->exponent, pub->modulus);
@@ -215,4 +168,67 @@ char *rsa_decrypt(long long *message, unsigned long message_size, struct private
   }
   free(temp);
   return decrypted;
+}
+
+// this function is using the extended euclidian algorithm to calculate d
+// essentially, to find d, it needs to satisfy de ≡ 1 mod phi
+// it's a little hard to follow, and even some of the logic goes a little over my head
+// all i know it that it works, and if it works, it doesn't need fixed
+long long calculate_d(long long a, long long b){
+ long long x = 0, return_d = 1, u = 1, v = 0; 
+ long long gcd = b, var_a, n, q, var_b;
+ // do - while because it needs to be done at least once
+ do{
+   q = gcd/a; 
+   var_b = gcd % a;
+   var_a = x-u*q; 
+   n = return_d-v*q;
+   gcd = a; 
+   a = var_b; 
+   x = u; 
+   d = v; 
+   u = var_a; 
+   v = n;
+   } while (a != 0); 
+   return return_d;
+}
+
+// recursively go through and go from encrypted to decrypted or vice versa
+// the math works the same when given the public key to encrypt and the private key to decrypt
+long long calculate_mod_exp(long long mess, long long exp, long long mod){
+// if any are negative or the message is less than or equal to zero, it won't work, break
+  if (mess < 0 || exp < 0 || mod <= 0){
+    exit(-1);
+  }
+  mess %= mod;
+  
+  //case if even
+  if(exp % 2 == 0){
+    return (calculate_mod_exp(mess * mess % mod), (exp / 2), mod) % mod);
+  }
+  //case if odd
+  if(e % 2 == 1){
+    return (mess * calculate_mod_exp(mess, (exp - 1), mod) % mod);
+  }
+
+}
+
+// Recursive function to return gcd of a and b 
+int gcd(int a, int b){ 
+    // Everything divides 0  
+    if (a == 0){ 
+       return b;
+    } 
+    if (b == 0){ 
+       return a;
+    } 
+    // base case 
+    if (a == b){ 
+        return a;
+    }	
+    // a is greater 
+    if (a > b){ 
+        return gcd(a-b, b);
+    }	
+    return gcd(a, b-a); 
 }
