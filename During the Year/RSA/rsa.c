@@ -186,7 +186,7 @@ long long calculate_d(long long a, long long b){
    gcd = a; 
    a = var_b; 
    x = u; 
-   d = v; 
+   return_d = v; 
    u = var_a; 
    v = n;
    } while (a != 0); 
