@@ -45,7 +45,7 @@ char buffer[1000];
 //unchanged value, ergo const
 const int largest_nums = 64;
 
-
+// Good god I'm too tired to be typing anymore
 // generate a public and private key, given the primes list and the key structs
 void rsa_gen_keys(struct public_key_struct *pub, struct private_key_struct *priv, char *primelistfile)
 {
